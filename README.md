@@ -9,8 +9,8 @@
 - [x] display menu
 - [x] read entry data from text/ image files
 - [x] display an entry's text
-- [ ] display an entry's image - *BROKEN*
-- [ ] create an entry (text only)
+- ~~display an entry's image~~
+- [ ] create an entry
 - [ ] edit an entry
 - [ ] delete an entry
 - [x] find an entry by common name and latin name
@@ -19,5 +19,5 @@
 
 - [ ] generate html (possibly via markdown)
 - [ ] display watering dates according to watering frequency
-- [ ] display wikipedia info on plant
-- [ ] store data in CSV format
+- ~~display wikipedia info on plant~~
+- [x] store data in CSV format

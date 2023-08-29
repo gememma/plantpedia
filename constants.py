@@ -6,8 +6,7 @@ main_menu = [
     "Remove an existing entry",
 ]
 entry_menu = [
-    "Show me an image!",
-    "Get me Wikipedia data!",
+    "Take me to Wikipedia!",
 ]
 edit_menu = [
     "Common name",

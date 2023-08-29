@@ -3,16 +3,15 @@ from typing import List
 import csv
 
 import colorama
-import ascii_magic
 import constants
 
 @dataclass
 class Plant:
     common_name: str
     latin_name: str
-    image: str
     date: str
     notes: str
+    link: str
 
 def get_plants() -> List[Plant]:
     with open("data/data.csv", "r") as read_obj:
@@ -21,13 +20,12 @@ def get_plants() -> List[Plant]:
     plants = []
     for entry in rows:
         filename = entry[0].replace(" ", "").lower()
-        ascii_image = ascii_magic.from_image_file(f"data/{filename}.jpg", columns = 60)
         plants.append(Plant(
             common_name=entry[0],
             latin_name=entry[1],
-            image=ascii_image,
             date=entry[2],
             notes=entry[3],
+            link=entry[4],
             )
         )
     return plants
@@ -81,7 +79,7 @@ def serve_remove():
 
 def print_entry(plant: Plant):
     print(f"{plant.common_name} ({plant.latin_name})")
-    print(f"Date of acquiry: {plant.date}")
+    print(f"Date of purchase: {plant.date}")
     print("\nNotes:")
     note_list = plant.notes.split(".")
     note_list.pop()
@@ -90,13 +88,9 @@ def print_entry(plant: Plant):
     while True:
         selection = serve_menu(constants.entry_menu, "\nWhat now?")
         if selection == 0:
-            ascii_magic.to_terminal(plant.image)
+            print(plant.link, "\n")
+            break
         elif selection == 1:
-            # https://pypi.org/project/Wikipedia-API/ <- use this
-            print("Sorry, not yet working :) try this...")
-            encoded = plant.latin_name.replace(" ", "_").lower()
-            print(f"https://en.wikipedia.org/wiki/{encoded}")
-        elif selection == 2:
             return
         else:
             print("Invalid selection :(")
