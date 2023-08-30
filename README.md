@@ -10,7 +10,7 @@
 - [x] read entry data from text/ image files
 - [x] display an entry's text
 - ~~display an entry's image~~
-- [ ] create an entry
+- [x] create an entry
 - [x] edit an entry
 - [ ] delete an entry
 - [x] find an entry by common name and latin name
