@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import List
-import csv
+import pandas as pd
 
 import colorama
 import constants
@@ -14,25 +14,32 @@ class Plant:
     link: str
 
 def get_plants() -> List[Plant]:
-    with open("data/data.csv", "r") as read_obj:
-        csv_reader = csv.reader(read_obj)
-        rows = list(csv_reader)
+    df = pd.read_csv('data/data.csv', header=None)
+    (rows, columns) = df.shape
+    if columns !=5:
+        raise IndexError("Error while reading data/data.csv, unexpected number of columns")
     plants = []
-    for entry in rows:
-        filename = entry[0].replace(" ", "").lower()
+    for entry in df.itertuples():
         plants.append(Plant(
-            common_name=entry[0],
-            latin_name=entry[1],
-            date=entry[2],
-            notes=entry[3],
-            link=entry[4],
+            common_name=entry[1],
+            latin_name=entry[2],
+            date=entry[3],
+            notes=entry[4],
+            link=entry[5],
             )
         )
+    # TODO: return dataframe instead of custom dataclass
     return plants
+
+def edit_csv(row: int, field: int, new: str):
+    df = pd.read_csv('data/data.csv', header=None)
+    df.loc[row, field] = new
+    df.to_csv('data/data.csv', header=False, index=False)
 
 def serve_menu(options: List[str], prompt: str) -> int:
     print(colorama.Fore.YELLOW + prompt)
     print(colorama.Fore.GREEN)
+    i=0
     for i,option in enumerate(options):
         print(f"[{i}] {option}")
     print(f"[{i+1}] Exit\n")
@@ -62,6 +69,15 @@ def serve_view():
     selection = serve_menu([f"{x.common_name} ({x.latin_name})" for x in plants], "SELECT PLANT\n------------")
     if selection < len(plants):
         print_entry(plants[selection])
+        while True:
+            selection = serve_menu(constants.entry_menu, "\nWhat now?")
+            if selection == 0:
+                print(plants[selection].link, "\n")
+                break
+            elif selection == 1:
+                return
+            else:
+                print("Invalid selection :(")
     elif selection == len(plants):
         return
     else:
@@ -69,7 +85,19 @@ def serve_view():
         return
 
 def serve_edit():
-    pass
+    plants = get_plants()
+    selection = serve_menu([f"{x.common_name} ({x.latin_name})" for x in plants], "SELECT PLANT\n------------")
+    if selection < len(plants):
+        print_entry(plants[selection])
+        field = serve_menu(constants.edit_menu, "\nWhat do you want to change?")
+        new_value = input("Enter a new value: ")
+        edit_csv(selection, field, new_value)
+        print("Value changed\n")
+    elif selection == len(plants):
+        return
+    else:
+        print("Invalid selection :(")
+        return
 
 def serve_add():
     pass
@@ -85,15 +113,6 @@ def print_entry(plant: Plant):
     note_list.pop()
     for note in note_list:
         print(f"> {note.strip()}")
-    while True:
-        selection = serve_menu(constants.entry_menu, "\nWhat now?")
-        if selection == 0:
-            print(plant.link, "\n")
-            break
-        elif selection == 1:
-            return
-        else:
-            print("Invalid selection :(")
 
 def main():
     colorama.init()

@@ -11,7 +11,7 @@
 - [x] display an entry's text
 - ~~display an entry's image~~
 - [ ] create an entry
-- [ ] edit an entry
+- [x] edit an entry
 - [ ] delete an entry
 - [x] find an entry by common name and latin name
 
