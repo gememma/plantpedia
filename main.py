@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import List
 import pandas as pd
-
 import colorama
 import constants
 
@@ -26,7 +25,6 @@ def get_plants() -> List[Plant]:
             notes=entry[4],
             )
         )
-    # TODO: return dataframe instead of custom dataclass
     return plants
 
 def edit_csv(row: int, field: int, new: str):
@@ -39,6 +37,11 @@ def push_to_csv(new_row: pd.DataFrame):
     df = pd.concat([df, new_row.transpose()])
     df.to_csv('data/data.csv', header=False, index=False)
     pass
+
+def remove_from_csv(row: int):
+    df = pd.read_csv('data/data.csv', header=None)
+    df = df.drop(index=row)
+    df.to_csv('data/data.csv', header=False, index=False)
 
 def serve_menu(options: List[str], prompt: str) -> int:
     print(colorama.Fore.YELLOW + prompt)
@@ -97,13 +100,31 @@ def serve_edit():
 def serve_add():
     new_entry = []
     for field in constants.edit_menu:
-        new_value = input("Enter a value for " + field + ": ")
+        new_value = input(f"Enter a value for {field}: ")
         new_entry.append(new_value)
     df = pd.DataFrame(data=new_entry)
     push_to_csv(df)
 
 def serve_remove():
-    pass
+    plants = get_plants()
+    selection = serve_menu([f"{x.common_name} ({x.latin_name})" for x in plants], "SELECT PLANT TO REMOVE\n------------")
+    if selection < len(plants):
+        while True:
+            go_ahead = input(f"Are you sure you want to delete the entry for {plants[selection].common_name}? y/n\n")
+            if go_ahead.strip()=="y":
+                remove_from_csv(selection)
+                print("Entry removed")
+                break
+            elif go_ahead.strip()=="n":
+                print("Entry not removed")
+                break
+            else:
+                print("Please input y/n\n")
+    elif selection == len(plants):
+        return
+    else:
+        print("Invalid selection :(")
+        return
 
 def print_entry(plant: Plant):
     print(f"{plant.common_name} ({plant.latin_name})")
