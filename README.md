@@ -22,3 +22,14 @@
 - ~~display wikipedia info on plant~~
 - [x] store data in CSV format
 - [ ] replace Plant dataclass with pandas DataFrame
+
+
+# Installation
+
+To run plantpedia, you will need to have Python installed (by visiting the [Python Wiki](https://wiki.python.org/moin/BeginnersGuide/Download))
+as well as the required libraries:
+
+```bash
+pip install colorama
+pip install pandas
+```
